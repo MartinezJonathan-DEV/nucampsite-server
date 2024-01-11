@@ -46,6 +46,33 @@ app.use(express.urlencoded({ extended: false }));
 // Middleware for handling cookies
 app.use(cookieParser());
 
+function auth(req, res, next) {
+  console.log("🚀 ~ auth ~ req.headers:", req.headers);
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    const err = new Error("You are not authenticated!");
+    res.setHeader("WWW-Authenticate", "Basic");
+    err.status = 401;
+    return next(err);
+  }
+
+  const auth = Buffer.from(authHeader.split(" ")[1], "base64")
+    .toString()
+    .split(":");
+  const user = auth[0];
+  const pass = auth[1];
+  if (user === "admin" && "password") {
+    return next();
+  } else {
+    const err = new Error("You are not authenticated!");
+    res.setHeader("WWW-Authenticate", "Basic");
+    err.status = 401;
+    return next(err);
+  }
+}
+
+app.use(auth);
+
 // Middleware for serving static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public")));
 

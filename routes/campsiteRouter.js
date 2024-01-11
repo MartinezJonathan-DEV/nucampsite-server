@@ -1,22 +1,14 @@
+// Importing required modules
 const express = require("express");
 const Campsite = require("../models/campsite");
 
-// Create an Express Router for handling campsite-related routes
+// Creating an Express Router
 const campsiteRouter = express.Router();
 
-/**
- * Middleware for handling common tasks for all routes on "/campsites"
- */
+// Handling requests for /campsites route
 campsiteRouter
   .route("/")
-  /**
-   * GET request handler for retrieving all campsites.
-   * Responds with a JSON array of campsites.
-   *
-   * @param {Object} req - Express request object.
-   * @param {Object} res - Express response object.
-   * @param {function} next - Express next middleware function.
-   */
+  // Handling GET request for all campsites
   .get((req, res, next) => {
     Campsite.find()
       .then((campsites) => {
@@ -26,14 +18,7 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-  /**
-   * POST request handler for creating a new campsite.
-   * Responds with a JSON object of the created campsite.
-   *
-   * @param {Object} req - Express request object containing the new campsite data.
-   * @param {Object} res - Express response object.
-   * @param {function} next - Express next middleware function.
-   */
+  // Handling POST request to create a new campsite
   .post((req, res, next) => {
     Campsite.create(req.body)
       .then((campsite) => {
@@ -43,25 +28,12 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-  /**
-   * PUT request handler for updating campsites.
-   * Responds with an error message for unsupported PUT requests on "/campsites".
-   *
-   * @param {Object} req - Express request object.
-   * @param {Object} res - Express response object.
-   */
+  // Handling PUT request (not supported)
   .put((req, res) => {
     res.statusCode = 403;
     res.end("PUT operation not supported on /campsites");
   })
-  /**
-   * DELETE request handler for deleting all campsites.
-   * Responds with a JSON object containing the delete operation response.
-   *
-   * @param {Object} req - Express request object.
-   * @param {Object} res - Express response object.
-   * @param {function} next - Express next middleware function.
-   */
+  // Handling DELETE request to delete all campsites
   .delete((req, res, next) => {
     Campsite.deleteMany()
       .then((response) => {
@@ -72,19 +44,10 @@ campsiteRouter
       .catch((err) => next(err));
   });
 
-/**
- * Middleware for handling common tasks for all routes on "/campsites/:campsiteId"
- */
+// Handling requests for /campsites/:campsiteId route
 campsiteRouter
   .route("/:campsiteId")
-  /**
-   * GET request handler for retrieving a specific campsite by ID.
-   * Responds with a JSON object of the requested campsite.
-   *
-   * @param {Object} req - Express request object containing the campsite ID.
-   * @param {Object} res - Express response object.
-   * @param {function} next - Express next middleware function.
-   */
+  // Handling GET request for a specific campsite
   .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -94,26 +57,13 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-  /**
-   * POST request handler for unsupported POST requests on "/campsites/:campsiteId".
-   * Responds with an error message.
-   *
-   * @param {Object} req - Express request object.
-   * @param {Object} res - Express response object.
-   */
+  // Handling POST request (not supported)
   .post((req, res) => {
     res.end(
       `POST operation not supported on /campsites/${req.params.campsiteId}`
     );
   })
-  /**
-   * PUT request handler for updating a specific campsite by ID.
-   * Responds with a JSON object of the updated campsite.
-   *
-   * @param {Object} req - Express request object containing the campsite ID and updated data.
-   * @param {Object} res - Express response object.
-   * @param {function} next - Express next middleware function.
-   */
+  // Handling PUT request to update a specific campsite
   .put((req, res, next) => {
     Campsite.findByIdAndUpdate(
       req.params.campsiteId,
@@ -127,14 +77,7 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-  /**
-   * DELETE request handler for deleting a specific campsite by ID.
-   * Responds with a JSON object containing the delete operation response.
-   *
-   * @param {Object} req - Express request object containing the campsite ID.
-   * @param {Object} res - Express response object.
-   * @param {function} next - Express next middleware function.
-   */
+  // Handling DELETE request to delete a specific campsite
   .delete((req, res, next) => {
     Campsite.findByIdAndDelete(req.params.campsiteId)
       .then((response) => {
@@ -145,15 +88,10 @@ campsiteRouter
       .catch((err) => next(err));
   });
 
-// Route for handling comments on a specific campsite
+// Handling requests for /campsites/:campsiteId/comments route
 campsiteRouter
   .route("/:campsiteId/comments")
-  /**
-   * @route GET /campsites/:campsiteId/comments
-   * @description Get all comments for a specific campsite.
-   * @param {string} campsiteId - The ID of the campsite.
-   * @returns {Array<Object>} - An array of comments for the specified campsite.
-   */
+  // Handling GET request for comments of a specific campsite
   .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -169,14 +107,7 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-
-  /**
-   * @route POST /campsites/:campsiteId/comments
-   * @description Add a new comment to a specific campsite.
-   * @param {string} campsiteId - The ID of the campsite.
-   * @param {Object} req.body - The comment object to be added.
-   * @returns {Object} - The updated campsite with the added comment.
-   */
+  // Handling POST request to add a new comment to a specific campsite
   .post((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -198,21 +129,14 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-
-  // Respond with an error message for unsupported PUT requests
+  // Handling PUT request (not supported)
   .put((req, res) => {
     res.statusCode = 403;
     res.end(
       `PUT operation not supported on /campsites/${req.params.campsiteId}/comments`
     );
   })
-
-  /**
-   * @route DELETE /campsites/:campsiteId/comments
-   * @description Delete all comments for a specific campsite.
-   * @param {string} campsiteId - The ID of the campsite.
-   * @returns {Object} - The updated campsite without any comments.
-   */
+  // Handling DELETE request to delete all comments of a specific campsite
   .delete((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -235,16 +159,10 @@ campsiteRouter
       .catch((err) => next(err));
   });
 
-// Route for handling a specific comment on a specific campsite
+// Handling requests for /campsites/:campsiteId/comments/:commentId route
 campsiteRouter
   .route("/:campsiteId/comments/:commentId")
-  /**
-   * @route GET /campsites/:campsiteId/comments/:commentId
-   * @description Get a specific comment for a specific campsite.
-   * @param {string} campsiteId - The ID of the campsite.
-   * @param {string} commentId - The ID of the comment.
-   * @returns {Object} - The specific comment for the specified campsite.
-   */
+  // Handling GET request for a specific comment of a specific campsite
   .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -264,23 +182,14 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-
-  // Respond with an error message for unsupported POST requests
+  // Handling POST request (not supported)
   .post((req, res) => {
     res.statusCode = 403;
     res.end(
       `POST operation not supported on /campsites/${req.params.campsiteId}/comments/${req.params.commentId}`
     );
   })
-
-  /**
-   * @route PUT /campsites/:campsiteId/comments/:commentId
-   * @description Update a specific comment for a specific campsite.
-   * @param {string} campsiteId - The ID of the campsite.
-   * @param {string} commentId - The ID of the comment.
-   * @param {Object} req.body - The updated comment object.
-   * @returns {Object} - The updated campsite with the modified comment.
-   */
+  // Handling PUT request to update a specific comment of a specific campsite
   .put((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -311,14 +220,7 @@ campsiteRouter
       })
       .catch((err) => next(err));
   })
-
-  /**
-   * @route DELETE /campsites/:campsiteId/comments/:commentId
-   * @description Delete a specific comment for a specific campsite.
-   * @param {string} campsiteId - The ID of the campsite.
-   * @param {string} commentId - The ID of the comment.
-   * @returns {Object} - The updated campsite without the specified comment.
-   */
+  // Handling DELETE request to delete a specific comment of a specific campsite
   .delete((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
       .then((campsite) => {
@@ -345,5 +247,5 @@ campsiteRouter
       .catch((err) => next(err));
   });
 
-// Export the campsiteRouter to be used in other modules
+// Exporting the campsiteRouter for external use
 module.exports = campsiteRouter;
