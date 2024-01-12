@@ -23,8 +23,8 @@ const commentSchema = new Schema(
     },
     // Author of the comment
     author: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {
