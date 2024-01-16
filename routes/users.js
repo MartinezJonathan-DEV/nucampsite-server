@@ -6,10 +6,16 @@ const authenticate = require("../authenticate");
 // Create an Express Router for handling user-related routes
 const router = express.Router();
 
-router.get("/", function (req, res, next) {
-  // Send a response with the message 'respond with a resource'
-  res.send("respond with a resource");
-});
+router.get(
+  "/",
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  function (req, res, next) {
+    if (req.user.admin) {
+      return res.send("respond with a resource");
+    }
+  }
+);
 
 router.post("/signup", (req, res) => {
   User.register(
